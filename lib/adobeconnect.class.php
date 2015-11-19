@@ -34,10 +34,10 @@
 		public function getAccountStatus($userList) {
 			error_log($userList);
 			json_decode($userList);
-			$response;
-			foreach($userList as $usernameOld => $usernameNew) {
-				$response[$usernameOld][$usernameOld] = $this->_checkUserExists($usernameOld);
-				$response[$usernameOld][$usernameNew] = $this->_checkUserExists($usernameNew);
+			$response = [];
+			foreach($userList as $usernameOldAndNew) {
+				$response[$usernameOldAndNew[0]][$usernameOldAndNew[0]] = $this->_checkUserExists($usernameOldAndNew[0]);
+				$response[$usernameOldAndNew[0]][$usernameOldAndNew[1]] = $this->_checkUserExists($usernameOldAndNew[1]);
 			}
 
 			return ($response);
