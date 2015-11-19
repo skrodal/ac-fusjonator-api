@@ -32,13 +32,6 @@
 		}
 
 		public function getAccountStatus($userList) {
-			error_log($userList);
-
-			$decodedArr = json_decode($userList);
-			$decodedAss = json_decode($userList);;
-
-			error_log(json_encode($decodedArr));
-			error_log(json_encode($decodedAss));
 
 			return $userList;
 
@@ -51,8 +44,33 @@
 			return ($response);
 		}
 
-		public function verifyAccountList($POST_DATA){
-			return $POST_DATA;
+		public function verifyAccountList($postData){
+			// Get/set POST values
+			$userList       = isset($postData['user_list']) ? $postData['user_list'] : false;
+			// Not used (yet)
+			$token          = isset($postData['token']) ? $postData['token'] : false;
+			// Check that all required data is here
+			if(!$userList) { Response::error(400, 'Missing one or more required data fields from POST. Cannot continue without required data...'); }
+			// Use sessioncookie passed from client
+			if($token !== false) { $this->sessioncookie = $token; }
+			// To be sent back to client...
+			$responseObj = array();
+			// Loop all user pairs in the CSV
+			foreach($userList as $userOldAndNew) {
+				// Must be two columns only for each entry
+				if(sizeof($userOldAndNew) !== 2) {
+					Response::error(400, 'Malformed data structure. Cannot continue.');
+				}
+
+				$oldLoginInfo = $this->_checkUserExists($userOldAndNew[0]);
+				$newLoginInfo = $this->_checkUserExists($userOldAndNew[1]);
+
+				// Add response for old and new username
+				$responseObj[$userOldAndNew[0]][$userOldAndNew[0]] = $oldLoginInfo;
+				$responseObj[$userOldAndNew[0]][$userOldAndNew[1]] = $newLoginInfo;
+			}
+			// Done :-)
+			return ($responseObj);
 		}
 
 
@@ -85,8 +103,7 @@
 			// Done :-)
 			return array(
 				'id'          => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
-				'username'    => (string)$apiUserInfoResponse->{'principal-list'}->principal->login,
-				'autocreated' => "false"
+				'username'    => (string)$apiUserInfoResponse->{'principal-list'}->principal->login
 			);
 		}
 

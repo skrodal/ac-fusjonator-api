@@ -17,7 +17,7 @@
 	//  http://altorouter.com
 	require_once($BASE . '/lib/router.class.php');
 	$router = new Router();
-	$router->addMatchTypes(array('userlist' => '[0-9A-Za-z\[\]@.,%]++'));
+	// $router->addMatchTypes(array('userlist' => '[0-9A-Za-z\[\]@.,%]++'));
 	$router->setBasePath($API_BASE_PATH);
 	// Proxy API to Adobe Connect
 	require_once($BASE . '/lib/adobeconnect.class.php');
@@ -45,12 +45,12 @@
 	}, 'Adobe Connect version');
 
 	/**
-	 * GET Adobe Connect version
+	 * GET Template
 	 */
-	$router->map('GET', '/users/[userlist:userList]/status/', function ($userList) {
+	$router->map('GET', '/PATH/[i:iD]/status/', function ($iD) {
 		global $connect;
-		Response::result(array('status' => true, 'data' => $connect->getAccountStatus($userList)));
-	}, 'Check account status for each user in userList.');
+		Response::result(array('status' => true, 'data' => $connect->SOME_FUNCTION($iD)));
+	}, 'DESCRIPTION OF ROUTE');
 
 
 
@@ -58,7 +58,7 @@
 	$router->map('POST', '/users/verify/', function () {
 		global $connect;
 		Response::result($connect->verifyAccountList($_POST));
-	});
+	}, 'Verify Array of usernames [[oldLogin, newLogin], [...,...], ...] ');
 	// -------------------- UTILS -------------------- //
 
 	// Make sure requested org name is the same as logged in user's org
