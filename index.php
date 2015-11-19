@@ -17,7 +17,7 @@
 	//  http://altorouter.com
 	require_once($BASE . '/lib/router.class.php');
 	$router = new Router();
-	$router->addMatchTypes(array('userlist' => '[0-9A-Za-z.@,\[\]]++'));
+	$router->addMatchTypes(array('userlist' => '[0-9A-Za-z\[\]@.,%]++'));
 	$router->setBasePath($API_BASE_PATH);
 	// Proxy API to Adobe Connect
 	require_once($BASE . '/lib/adobeconnect.class.php');
