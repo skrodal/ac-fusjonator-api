@@ -51,6 +51,10 @@
 			return ($response);
 		}
 
+		public function verifyAccountList($POST_DATA){
+			return $POST_DATA;
+		}
+
 
 		/**
 		 * Check if a user exists. Returns false if not, otherwise user metadata.

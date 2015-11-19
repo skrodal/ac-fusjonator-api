@@ -53,6 +53,12 @@
 	}, 'Check account status for each user in userList.');
 
 
+
+
+	$router->map('POST', '/users/verify/', function () {
+		global $connect;
+		Response::result($connect->verifyAccountList($_POST));
+	});
 	// -------------------- UTILS -------------------- //
 
 	// Make sure requested org name is the same as logged in user's org
