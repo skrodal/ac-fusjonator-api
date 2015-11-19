@@ -56,18 +56,40 @@
 			// To be sent back to client...
 			$responseObj = array();
 			// Loop all user pairs in the CSV
-			foreach($userList as $userOldAndNew) {
+			foreach($userList as $userCurrentAndNew) {
 				// Must be two columns only for each entry
-				if(sizeof($userOldAndNew) !== 2) {
+				if(sizeof($userCurrentAndNew) !== 2) {
 					Response::error(400, 'Malformed data structure. Cannot continue.');
 				}
 
-				$oldLoginInfo = $this->_checkUserExists($userOldAndNew[0]);
-				$newLoginInfo = $this->_checkUserExists($userOldAndNew[1]);
+				// INFO:
+				// 1. Hvis userOld eksisterer
+				//      a) Sjekk om userNew eksisterer
+				//          - Hvis nei, legg til i liste over brukere som skal migreres
+				//          - Hvis ja, vi har et problem...
+				// 2. Hvis userOld IKKE eksisterer
+				//      a) Skip, ikke legg til denne brukeren i det hele tatt. Uinteressant om userNew finnes allerede.
 
-				// Add response for old and new username
-				$responseObj[$userOldAndNew[0]][$userOldAndNew[0]] = $oldLoginInfo;
-				$responseObj[$userOldAndNew[0]][$userOldAndNew[1]] = $newLoginInfo;
+				// Check if old username has an account
+				$currentLoginInfo = $this->_checkUserExists($userCurrentAndNew[0]);
+
+				// If yes, we need to do more, otherwise skip to next user
+				if($currentLoginInfo !== false) {
+					// Check if the new username already has an account
+					$newLoginInfo = $this->_checkUserExists($userCurrentAndNew[1]);
+					// If yes, we have a situation (cannot move old to new, hence old account content will not be merged with new account)
+					if($newLoginInfo !== false) {
+						$responseObj['problem'][$userCurrentAndNew[0]]['message'] = 'Nytt brukernavn er allerede blitt tatt i bruk!';
+						$responseObj['problem'][$userCurrentAndNew[0]]['account_info_current'] = $currentLoginInfo;
+						$responseObj['problem'][$userCurrentAndNew[0]]['account_info_new'] = $newLoginInfo;
+					} else {
+						// Return old username and principal ID back to the client for final check before
+						// it can make a MERGE request.
+						$responseObj['ready'][$userCurrentAndNew[0]]['message'] = 'Klar for fusjonering til nytt brukernavn!';
+						$responseObj['ready'][$userCurrentAndNew[0]]['account_info_current'] = $currentLoginInfo;
+						$responseObj['ready'][$userCurrentAndNew[0]]['account_info_new'] = $userCurrentAndNew[1];
+					}
+				}
 			}
 			// Done :-)
 			return ($responseObj);
