@@ -35,6 +35,7 @@
 			error_log($userList);
 			$userList = json_decode(html_entity_decode($userList));
 			error_log(json_encode($userList));
+			return (json_last_error_msg());
 			$response = [];
 			foreach($userList as $usernameOldAndNew) {
 				$response[$usernameOldAndNew[0]][$usernameOldAndNew[0]] = $this->_checkUserExists($usernameOldAndNew[0]);
