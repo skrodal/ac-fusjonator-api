@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * 
+	 *
 	 *
 	 * @author Simon Skrodal
 	 * @since  November 2015
@@ -8,7 +8,7 @@
 
 
 	// Some calls take a long while so increase timeout limit from def. 30
-	set_time_limit(300);	// 5 mins
+	set_time_limit(300);    // 5 mins
 	// Have experienced fatal error - allowed memory size of 128M exhausted - thus increase
 	ini_set('memory_limit', '350M');
 
@@ -17,21 +17,32 @@
 
 		protected $config, $apiurl, $sessioncookie;
 
-
 		function __construct($config) {
 			$this->config        = $config;
 			$this->sessioncookie = NULL;
 			$this->apiurl        = $this->config['connect-api-base'];
 		}
 
-		/** PUBLIC SCOPE **/
+		/** Routes implementation **/
 
 		public function getConnectVersion() {
 			$apiCommonInfo = $this->callConnectApi(array('action' => 'common-info'), false);
-			return array('status' => true, 'version' => (string)$apiCommonInfo->common->version);
+
+			return (string)$apiCommonInfo->common->version;
 		}
 
-		
+		public function getAccountStatus($userList) {
+			error_log($userList);
+			json_decode($userList);
+			$response;
+			foreach($userList as $usernameOld => $usernameNew) {
+				$response[$usernameOld][$usernameOld] = $this->_checkUserExists($usernameOld);
+				$response[$usernameOld][$usernameNew] = $this->_checkUserExists($usernameNew);
+			}
+
+			return ($response);
+		}
+
 
 		/**
 		 * Check if a user exists. Returns false if not, otherwise user metadata.
@@ -148,7 +159,7 @@
 
 		// ---------------------------- ./UTILS ----------------------------
 
-	
+
 	}
 
 
