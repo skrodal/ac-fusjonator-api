@@ -33,7 +33,7 @@
 
 		public function getAccountStatus($userList) {
 			error_log($userList);
-			$userList = json_decode($userList);
+			$userList = json_decode(html_entity_decode($userList));
 			error_log(json_encode($userList));
 			$response = [];
 			foreach($userList as $usernameOldAndNew) {
