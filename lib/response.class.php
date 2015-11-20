@@ -17,7 +17,7 @@ class Response {
 		//
 		http_response_code(200);
 		// Return response
-		exit(json_encode( $result ));
+		exit(json_encode( array('status' => true, 'data' => $result) ));
 	}
 
 	public static function error($code, $error) {

@@ -32,7 +32,7 @@
 	 */
 	$router->map('GET', '/', function () {
 		global $router;
-		Response::result(array('status' => true, 'data' => $router->getRoutes()));
+		Response::result($router->getRoutes());
 	}, 'Routes listing');
 
 
@@ -41,7 +41,7 @@
 	 */
 	$router->map('GET', '/version/', function () {
 		global $connect;
-		Response::result(array('status' => true, 'data' => $connect->getConnectVersion()));
+		Response::result($connect->getConnectVersion());
 	}, 'Adobe Connect version');
 
 	/**
