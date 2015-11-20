@@ -91,7 +91,9 @@
 					}
 				} // Users with no existing account on the service
 				else {
-					$responseObj['ignore'][$userCurrentAndNew[0]]['message'] = 'Hopper over siden ingen konto er registrert for dette brukernavnet.';
+					$responseObj['ignore'][$userCurrentAndNew[0]]['message']                          = 'Hopper over siden ingen konto er registrert for dette brukernavnet.';
+					$responseObj['ignore'][$userCurrentAndNew[0]]['account_info_current']['username'] = $userCurrentAndNew[0];
+					$responseObj['ignore'][$userCurrentAndNew[0]]['account_info_new']['username']     = $userCurrentAndNew[1];
 				}
 			}
 
