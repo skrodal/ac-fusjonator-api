@@ -85,9 +85,9 @@
 					} else {
 						// Return old username and principal ID back to the client for final check before
 						// it can make a MERGE request.
-						$responseObj['ok'][$userCurrentAndNew[0]]['message']              = 'Klar for fusjonering til nytt brukernavn!';
-						$responseObj['ok'][$userCurrentAndNew[0]]['account_info_current'] = $currentLoginInfo;
-						$responseObj['ok'][$userCurrentAndNew[0]]['account_info_new']     = $userCurrentAndNew[1];
+						$responseObj['ok'][$userCurrentAndNew[0]]['message']                      = 'Klar for fusjonering til nytt brukernavn!';
+						$responseObj['ok'][$userCurrentAndNew[0]]['account_info_current']         = $currentLoginInfo;
+						$responseObj['ok'][$userCurrentAndNew[0]]['account_info_new']['username'] = $userCurrentAndNew[1];
 					}
 				} // Users with no existing account on the service
 				else {
