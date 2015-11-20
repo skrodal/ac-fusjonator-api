@@ -79,7 +79,7 @@
 					$newLoginInfo = $this->_checkUserExists($userCurrentAndNew[1]);
 					// If yes, we have a situation (cannot move old to new, hence old account content will not be merged with new account)
 					if($newLoginInfo !== false) {
-						$responseObj['problem'][$userCurrentAndNew[0]]['message']              = 'Nytt brukernavn er allerede blitt tatt i bruk!';
+						$responseObj['problem'][$userCurrentAndNew[0]]['message']              = 'Kan ikke migrere! Nytt brukernavn er allerede blitt tatt i bruk.';
 						$responseObj['problem'][$userCurrentAndNew[0]]['account_info_current'] = $currentLoginInfo;
 						$responseObj['problem'][$userCurrentAndNew[0]]['account_info_new']     = $newLoginInfo;
 					} else {
@@ -89,6 +89,9 @@
 						$responseObj['ready'][$userCurrentAndNew[0]]['account_info_current'] = $currentLoginInfo;
 						$responseObj['ready'][$userCurrentAndNew[0]]['account_info_new']     = $userCurrentAndNew[1];
 					}
+				} // Users with no existing account on the service
+				else {
+					$responseObj['ignore'][$userCurrentAndNew[0]]['message'] = 'Hopper over siden ingen konto er registrert for dette brukernavnet.';
 				}
 			}
 
@@ -96,7 +99,7 @@
 			return ($responseObj);
 		}
 
-		public function migrateUserAccounts($postData){
+		public function migrateUserAccounts($postData) {
 
 		}
 
@@ -141,9 +144,6 @@
 				'username' => (string)$apiUserInfoResponse->{'principal-list'}->principal->login
 			);
 		}
-
-
-
 
 
 		/**
