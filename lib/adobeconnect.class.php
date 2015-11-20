@@ -143,10 +143,9 @@
 
 				// If yes, we need to do more, otherwise skip to next user
 				if($usernameUpdateResponse !== false) {
-					$responseObj['ok'][$userObj['current_username']]['message']                                          = 'Brukernavn fusjonert!';
-					$responseObj['ok'][$userObj['current_username']['current_username']]['account_info_old']['username'] = $userObj['current_username'];
-					$responseObj['ok'][$userObj['current_username']]['account_info_new']                                 = $usernameUpdateResponse;
-
+					$responseObj['ok'][$userObj['current_username']] ['message']                      = 'Brukernavn fusjonert!';
+					$responseObj['ok'][$userObj['current_username']] ['account_info_old']['username'] = $userObj['current_username'];
+					$responseObj['ok'][$userObj['current_username']] ['account_info_new']             = $usernameUpdateResponse;
 				} else {
 					$responseObj['problem'][$userObj['current_username']]['message'] = 'Ukjent problem';
 				}
