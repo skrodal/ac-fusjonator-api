@@ -134,21 +134,21 @@
 			// Loop all user pairs in the CSV
 			foreach($userList as $index => $userObj) {
 				// Check for required user info in the object
-				if(!$userObj->current_username || !$userObj->new_username || !$userObj->principal_id) {
+				if(!$userObj['current_username'] || !$userObj['new_username'] || !$userObj['principal_id']) {
 					Response::error(400, 'Malformed data structure. Cannot continue.');
 				}
 
 				// DO username change
-				$usernameUpdateResponse = $this->_changeUsername($userObj->principal_id, $userObj->new_username);
+				$usernameUpdateResponse = $this->_changeUsername($userObj['principal_id'], $userObj['new_username']);
 
 				// If yes, we need to do more, otherwise skip to next user
 				if($usernameUpdateResponse !== false) {
-					$responseObj['ok'][$userObj->current_username]['message']                          = 'Brukernavn fusjonert!';
-					$responseObj['ok'][$userObj->current_username]['account_info_old']['username']     = $userObj->current_username;
-					$responseObj['ok'][$userObj->current_username]['account_info_new']['username']     = $usernameUpdateResponse->username;
-					$responseObj['ok'][$userObj->current_username]['account_info_new']['principal_id'] = $usernameUpdateResponse->principal_id;
+					$responseObj['ok'][$userObj['current_username']]['message']                                          = 'Brukernavn fusjonert!';
+					$responseObj['ok'][$userObj['current_username']['current_username']]['account_info_old']['username'] = $userObj['current_username'];
+					$responseObj['ok'][$userObj['current_username']]['account_info_new']                                 = $usernameUpdateResponse;
+
 				} else {
-					$responseObj['problem'][$userObj->current_username]['message'] = 'Ukjent problem';
+					$responseObj['problem'][$userObj['current_username']]['message'] = 'Ukjent problem';
 				}
 			}
 
