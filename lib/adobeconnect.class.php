@@ -102,6 +102,7 @@
 		}
 
 		public function migrateUserAccounts($postData) {
+			return $postData();
 
 		}
 
