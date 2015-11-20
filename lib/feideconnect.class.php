@@ -7,7 +7,7 @@
 	 */
 	class FeideConnect {
 
-		protected $userName, $isAdmin, $userOrg, $isSuperAdmin, $config;
+		protected $userName, $clientHasAdminScope, $userOrg, $isUserSuperAdmin, $config;
 
 		function __construct($config) {
 			// Exits on OPTION call
@@ -17,28 +17,28 @@
 			// Exits on incorrect credentials
 			$this->_checkGateKeeperCredentials();
 			// Get Feide username (exits if not found)
-			$this->userName = $this->_getFeideUsername();
-			$this->isAdmin  = $this->_hasConnectScope('admin');
-			$this->userOrg  = explode('@', $this->userName); // Split username@org.no
-			$this->isSuperAdmin = ( strcasecmp($this->userOrg[1], 'uninett.no') == 0 );
-			$this->userOrg  = explode('.', $this->userOrg[1]); // Split org.no
-			$this->userOrg  = $this->userOrg[0]; // org
+			$this->userName            = $this->_getFeideUsername();
+			$this->clientHasAdminScope = $this->_hasConnectScope('admin');
+			$this->userOrg             = explode('@', $this->userName); // Split username@org.no
+			$this->isUserSuperAdmin    = ( strcasecmp($this->userOrg[1], 'uninett.no') == 0 );
+			$this->userOrg             = explode('.', $this->userOrg[1]); // Split org.no
+			$this->userOrg             = $this->userOrg[0]; // org
 		}
 
 		public function getUserName() {
 			return $this->userName;
 		}
 
-		public function isAdmin() {
-			return $this->isAdmin;
+		public function hasAdminScope() {
+			return $this->clientHasAdminScope;
 		}
 
 		public function getUserOrg() {
 			return $this->userOrg;
 		}
 
-		public function isSuperAdmin(){
-			return $this->isSuperAdmin;
+		public function isUserSuperAdmin(){
+			return $this->isUserSuperAdmin;
 		}
 
 

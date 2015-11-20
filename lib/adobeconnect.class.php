@@ -23,7 +23,9 @@
 			$this->apiurl        = $this->config['connect-api-base'];
 		}
 
-		/** Routes implementation **/
+		########################################################
+		# FUNCTIONS ACCESSIBLE BY ROUTES
+		########################################################
 
 		public function getConnectVersion() {
 			$apiCommonInfo = $this->callConnectApi(array('action' => 'common-info'), false);
@@ -31,28 +33,34 @@
 			return (string)$apiCommonInfo->common->version;
 		}
 
-		public function getAccountStatus($userList) {
-
-			return $userList;
-
-			$response = [];
-			foreach($userList as $usernameOldAndNew) {
-				$response[$usernameOldAndNew[0]][$usernameOldAndNew[0]] = $this->_checkUserExists($usernameOldAndNew[0]);
-				$response[$usernameOldAndNew[0]][$usernameOldAndNew[1]] = $this->_checkUserExists($usernameOldAndNew[1]);
-			}
-
-			return ($response);
-		}
-
-		public function verifyAccountList($postData){
+		/**
+		 * READ-ONLY
+		 *
+		 * Processes a userlist array received from the client with the following structure:
+		 *
+		 * current_login, new_login
+		 * ..., ...
+		 *
+		 * Run checks to see if any of the two logins already exist in the service. Return an object
+		 * back to the client with info about status for each login (candidates that can/cannot be migrated).
+		 *
+		 * @param $postData
+		 *
+		 * @return array
+		 */
+		public function verifyAccountList($postData) {
 			// Get/set POST values
-			$userList       = isset($postData['user_list']) ? $postData['user_list'] : false;
+			$userList = isset($postData['user_list']) ? $postData['user_list'] : false;
 			// Not used (yet)
-			$token          = isset($postData['token']) ? $postData['token'] : false;
+			$token = isset($postData['token']) ? $postData['token'] : false;
 			// Check that all required data is here
-			if(!$userList) { Response::error(400, 'Missing one or more required data fields from POST. Cannot continue without required data...'); }
+			if(!$userList) {
+				Response::error(400, 'Missing one or more required data fields from POST. Cannot continue without required data...');
+			}
 			// Use sessioncookie passed from client
-			if($token !== false) { $this->sessioncookie = $token; }
+			if($token !== false) {
+				$this->sessioncookie = $token;
+			}
 			// To be sent back to client...
 			$responseObj = array();
 			// Loop all user pairs in the CSV
@@ -61,14 +69,6 @@
 				if(sizeof($userCurrentAndNew) !== 2) {
 					Response::error(400, 'Malformed data structure. Cannot continue.');
 				}
-
-				// INFO:
-				// 1. Hvis userOld eksisterer
-				//      a) Sjekk om userNew eksisterer
-				//          - Hvis nei, legg til i liste over brukere som skal migreres
-				//          - Hvis ja, vi har et problem...
-				// 2. Hvis userOld IKKE eksisterer
-				//      a) Skip, ikke legg til denne brukeren i det hele tatt. Uinteressant om userNew finnes allerede.
 
 				// Check if old username has an account
 				$currentLoginInfo = $this->_checkUserExists($userCurrentAndNew[0]);
@@ -79,21 +79,34 @@
 					$newLoginInfo = $this->_checkUserExists($userCurrentAndNew[1]);
 					// If yes, we have a situation (cannot move old to new, hence old account content will not be merged with new account)
 					if($newLoginInfo !== false) {
-						$responseObj['problem'][$userCurrentAndNew[0]]['message'] = 'Nytt brukernavn er allerede blitt tatt i bruk!';
+						$responseObj['problem'][$userCurrentAndNew[0]]['message']              = 'Nytt brukernavn er allerede blitt tatt i bruk!';
 						$responseObj['problem'][$userCurrentAndNew[0]]['account_info_current'] = $currentLoginInfo;
-						$responseObj['problem'][$userCurrentAndNew[0]]['account_info_new'] = $newLoginInfo;
+						$responseObj['problem'][$userCurrentAndNew[0]]['account_info_new']     = $newLoginInfo;
 					} else {
 						// Return old username and principal ID back to the client for final check before
 						// it can make a MERGE request.
-						$responseObj['ready'][$userCurrentAndNew[0]]['message'] = 'Klar for fusjonering til nytt brukernavn!';
+						$responseObj['ready'][$userCurrentAndNew[0]]['message']              = 'Klar for fusjonering til nytt brukernavn!';
 						$responseObj['ready'][$userCurrentAndNew[0]]['account_info_current'] = $currentLoginInfo;
-						$responseObj['ready'][$userCurrentAndNew[0]]['account_info_new'] = $userCurrentAndNew[1];
+						$responseObj['ready'][$userCurrentAndNew[0]]['account_info_new']     = $userCurrentAndNew[1];
 					}
 				}
 			}
+
 			// Done :-)
 			return ($responseObj);
 		}
+
+		public function migrateUserAccounts($postData){
+
+		}
+
+
+
+		########################################################
+		#
+		# ADOBE CONNECT API
+		#
+		########################################################
 
 
 		/**
@@ -124,19 +137,24 @@
 
 			// Done :-)
 			return array(
-				'id'          => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
-				'username'    => (string)$apiUserInfoResponse->{'principal-list'}->principal->login
+				'id'       => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
+				'username' => (string)$apiUserInfoResponse->{'principal-list'}->principal->login
 			);
 		}
 
 
-		// ---------------------------- UTILS ----------------------------
+
 
 
 		/**
 		 * Utility function for AC API calls.
+		 *
+		 * @param array $params
+		 * @param bool  $requireSession
+		 *
+		 * @return bool|SimpleXMLElement
 		 */
-		protected function callConnectApi($params = array(), $requireSession = true) {
+		private function callConnectApi($params = array(), $requireSession = true) {
 
 			if($requireSession) {
 				$params['session'] = $this->getSessionAuthCookie();
@@ -167,7 +185,7 @@
 		 * @throws Exception
 		 * @return array
 		 */
-		protected function getSessionAuthCookie() {
+		private function getSessionAuthCookie() {
 			if($this->sessioncookie !== NULL) {
 				$this->_logger('Have cookie, reusing', __LINE__, __FUNCTION__);
 
@@ -191,6 +209,9 @@
 
 			return $this->sessioncookie;
 		}
+
+
+		// ---------------------------- UTILS ----------------------------
 
 		private function _responseToArray($response) {
 			$newArr = Array();

@@ -46,31 +46,48 @@
 
 	/**
 	 * GET Template
-	 */
+	 *
 	$router->map('GET', '/PATH/[i:iD]/status/', function ($iD) {
 		global $connect;
 		Response::result(array('status' => true, 'data' => $connect->SOME_FUNCTION($iD)));
 	}, 'DESCRIPTION OF ROUTE');
+	*/
 
-
-
-
+	/**
+	 * Run account checkups with Adobe Connect
+	 */
 	$router->map('POST', '/users/verify/', function () {
 		global $connect;
 		Response::result($connect->verifyAccountList($_POST));
 	}, 'Verify Array of usernames [[oldLogin, newLogin], [...,...], ...] ');
+
+	/**
+	 * Migrate user accounts (old login -> new login)
+	 */
+	$router->map('POST', '/users/migrate/', function () {
+		global $connect;
+		Response::result($connect->migrateUserAccounts($_POST));
+	}, 'Verify Array of usernames [[oldLogin, newLogin], [...,...], ...] ');
+
+
+
+
 	// -------------------- UTILS -------------------- //
 
-	// Make sure requested org name is the same as logged in user's org
-	function verifyOrgAccess($orgName) {
-		if(strcasecmp($orgName, $GLOBALS['feide']->getUserOrg()) !== 0) {
-			Response::error(401, $_SERVER["SERVER_PROTOCOL"] . ' 401 Unauthorized (request mismatch org/user). ');
+	// Restrict access to specified org
+	function verifyOrgAccess() {
+		global $feide;
+
+		if(!$feide->isUserSuperAdmin()) {
+			Response::error(401, $_SERVER["SERVER_PROTOCOL"] . ' 401 Unauthorized (USER is missing required access rights). ');
+		}
+
+		if(!$feide->hasAdminScope()){
+			Response::error(401, $_SERVER["SERVER_PROTOCOL"] . ' 401 Unauthorized (CLIENT is missing required scope). ');
 		}
 	}
 
 	/**
-	 *
-	 *
 	 * http://stackoverflow.com/questions/4861053/php-sanitize-values-of-a-array/4861211#4861211
 	 */
 	function sanitizeInput() {
@@ -85,6 +102,7 @@
 	$match = $router->match();
 
 	if($match && is_callable($match['target'])) {
+		verifyOrgAccess();
 		sanitizeInput();
 		call_user_func_array($match['target'], $match['params']);
 	} else {
