@@ -101,8 +101,59 @@
 			return ($responseObj);
 		}
 
+		/**
+		 * WRITE TO ADOBE CONNECT
+		 *
+		 * Takes POSTED userdata, an array with user objects as below, and changes username for each user by principal_id:
+		 *  {
+		 *      current_username: "borborson@uninett.no",
+		 *      new_username: "borborson@feide.no",
+		 *      principal_id: "6498176",
+		 *  }
+		 *
+		 *
+		 * @param $postData
+		 *
+		 * @return mixed
+		 */
 		public function migrateUserAccounts($postData) {
-			return $postData;
+			// Get/set POST values
+			$userList = isset($postData['user_list']) ? $postData['user_list'] : false;
+			// Not used (yet)
+			$token = isset($postData['token']) ? $postData['token'] : false;
+			// Check that all required data is here
+			if(!$userList) {
+				Response::error(400, 'Missing one or more required data fields from POST. Cannot continue without required data...');
+			}
+			// Use sessioncookie passed from client
+			if($token !== false) {
+				$this->sessioncookie = $token;
+			}
+			// To be sent back to client...
+			$responseObj = array();
+			// Loop all user pairs in the CSV
+			foreach($userList as $index => $userObj) {
+				// Check for required user info in the object
+				if(!$userObj->current_username || !$userObj->new_username || !$userObj->principal_id) {
+					Response::error(400, 'Malformed data structure. Cannot continue.');
+				}
+
+				// DO username change
+				$usernameUpdateResponse = $this->_changeUsername($userObj->principal_id, $userObj->new_username);
+
+				// If yes, we need to do more, otherwise skip to next user
+				if($usernameUpdateResponse !== false) {
+					$responseObj['ok'][$userObj->current_username]['message']                          = 'Brukernavn fusjonert!';
+					$responseObj['ok'][$userObj->current_username]['account_info_old']['username']     = $userObj->current_username;
+					$responseObj['ok'][$userObj->current_username]['account_info_new']['username']     = $usernameUpdateResponse->username;
+					$responseObj['ok'][$userObj->current_username]['account_info_new']['principal_id'] = $usernameUpdateResponse->principal_id;
+				} else {
+					$responseObj['problem'][$userObj->current_username]['message'] = 'Ukjent problem';
+				}
+			}
+
+			// Done :-)
+			return ($responseObj);
 		}
 
 
@@ -117,23 +168,23 @@
 		/**
 		 * Check if a user exists. Returns false if not, otherwise user metadata.
 		 *
-		 * @param $userName
+		 * @param $username
 		 *
-		 * @return bool|SimpleXMLElement[]
+		 * @return array|bool
 		 */
-		private function _checkUserExists($userName) {
+		private function _checkUserExists($username) {
 			$this->_logger('(BEFORE)', __LINE__, __FUNCTION__);
 			// Lookup account info for requested user
 			$apiUserInfoResponse = $this->callConnectApi(
 				array(
 					'action'       => 'principal-list',
-					'filter-login' => $userName
+					'filter-login' => $username
 				)
 			);
 			$this->_logger('(AFTER)', __LINE__, __FUNCTION__);
 			// Exit on error
 			if(strcasecmp((string)$apiUserInfoResponse->status['code'], "ok") !== 0) {
-				Response::error(400, 'User lookup failed: ' . $userName . ': ' . (string)$apiUserInfoResponse->status['subcode']);
+				Response::error(400, 'User lookup failed: ' . $username . ': ' . (string)$apiUserInfoResponse->status['subcode']);
 			}
 			// Ok search, but user does not exist (judged by missing metadata)
 			if(!isset($apiUserInfoResponse->{'principal-list'}->principal)) {
@@ -142,8 +193,45 @@
 
 			// Done :-)
 			return array(
-				'id'       => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
-				'username' => (string)$apiUserInfoResponse->{'principal-list'}->principal->login
+				'principal_id' => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
+				'username'     => (string)$apiUserInfoResponse->{'principal-list'}->principal->login
+			);
+		}
+
+		/**
+		 * Change a username with the supplied principal_id.
+		 *
+		 * @param $principalId
+		 * @param $newUsername
+		 *
+		 * @return array
+		 */
+		private function _changeUsername($principalId, $newUsername) {
+			/*
+			$this->_logger('(BEFORE)', __LINE__, __FUNCTION__);
+			//Run the update call requested principalId
+			$apiChangeUsernameResponse = $this->callConnectApi(
+				array(
+					'action'       => 'principal-update',
+					'principal-id' => $principalId,
+					'login'        => $newUsername
+				)
+			);
+			$this->_logger('(AFTER)', __LINE__, __FUNCTION__);
+			// Exit on error
+			if(strcasecmp((string)$apiChangeUsernameResponse->status['code'], "ok") !== 0) {
+				Response::error(400, 'User update failed: ' . $newUsername . ': ' . (string)$apiChangeUsernameResponse->status['subcode']);
+			}
+
+			// Done :-)
+			return array(
+				'principal_id'       => (string)$apiChangeUsernameResponse->{'principal-list'}->principal['principal-id'],
+				'username' => (string)$apiChangeUsernameResponse->{'principal-list'}->principal->login
+			);
+			*/
+			return array(
+				'principal_id' => $principalId,
+				'username'     => $newUsername
 			);
 		}
 
