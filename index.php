@@ -59,7 +59,7 @@
 	$router->map('POST', '/users/verify/', function () {
 		global $connect;
 		Response::result($connect->verifyAccountList($_POST));
-	}, 'Verify Array of usernames [[oldLogin, newLogin], [...,...], ...] ');
+	}, 'Verify array of usernames [[oldLogin, newLogin], [...,...], ...] ');
 
 	/**
 	 * Migrate user accounts (old login -> new login)
@@ -67,7 +67,7 @@
 	$router->map('POST', '/users/migrate/', function () {
 		global $connect;
 		Response::result($connect->migrateUserAccounts($_POST));
-	}, 'Verify Array of usernames [[oldLogin, newLogin], [...,...], ...] ');
+	}, 'Migrate supplied user accounts from current_login to new_login.');
 
 
 
