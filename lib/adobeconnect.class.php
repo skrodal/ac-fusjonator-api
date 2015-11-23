@@ -191,9 +191,6 @@
 				return false;
 			}
 
-			Response::error(400, 'User lookup failed: ' . $username . ': ' . (string)$apiUserInfoResponse->status['subcode']);
-
-
 			// Done :-)
 			return array(
 				'principal_id'  => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
@@ -240,7 +237,7 @@
 				'response_full' => $apiChangeUsernameResponse
 			);
 			*/
-			Response::error(400, 'User update failed: ' . $newUsername . ' (ID#' . $principalId . '): ' . (string)$apiChangeUsernameResponse->status['subcode']);
+
 
 			/* Dummy response - for testing */
 			return array(
