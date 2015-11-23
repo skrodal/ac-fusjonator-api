@@ -191,6 +191,9 @@
 				return false;
 			}
 
+			Response::error(400, 'User lookup failed: ' . $username . ': ' . (string)$apiUserInfoResponse->status['subcode']);
+
+
 			// Done :-)
 			return array(
 				'principal_id'  => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
