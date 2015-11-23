@@ -225,8 +225,8 @@
 
 			// Done :-)
 			return array(
-				'principal_id' => (string)$apiChangeUsernameResponse->{'principal-list'}->principal['principal-id'],
-				'username'     => (string)$apiChangeUsernameResponse->{'principal-list'}->principal->login
+				'principal_id' => (string)$apiChangeUsernameResponse->principal['principal-id'],
+				'username'     => (string)$apiChangeUsernameResponse->login
 			);
 			/* Dummy response:
 			return array(
