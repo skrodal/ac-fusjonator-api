@@ -208,7 +208,7 @@
 		 * @return array
 		 */
 		private function _changeUsername($principalId, $newUsername) {
-
+			/*
 			$this->_logger('(BEFORE)', __LINE__, __FUNCTION__);
 			//Run the update call requested principalId
 			$apiChangeUsernameResponse = $this->callConnectApi(
@@ -224,18 +224,26 @@
 				Response::error(400, 'User update failed: ' . $newUsername . ' (ID#' . $principalId . '): ' . (string)$apiChangeUsernameResponse->status['subcode']);
 			}
 
-			// Done :-)
+			// NOTE: Poorly documented by Adobe (http://help.adobe.com/en_US/connect/9.0/webservices/WS5b3ccc516d4fbf351e63e3d11a171ddf77-7f54_SP1.html),
+			// but principal-update only returns a status code if the command is *update*. Only when used to *create* a new principal does the endpoint
+			// return metadata for the principal. Hence, we cannot pull info about the updated user from the response; only status code.
+
+			// Given the note above, return the same ID and username as passed to this function. This is correct info, since the status code returned OK.
+
+
 			return array(
-				'principal_id'  => (string)$apiChangeUsernameResponse->principal['principal-id'],
-				'username'      => (string)$apiChangeUsernameResponse->login,
+				'principal_id'  => $principalId,
+				'username'      => $newUsername,
 				'response_full' => $apiChangeUsernameResponse
 			);
-			/* Dummy response:
+			*/
+
+			/* Dummy response - for testing */
 			return array(
 				'principal_id' => $principalId,
 				'username'     => $newUsername
 			);
-			*/
+
 		}
 
 
