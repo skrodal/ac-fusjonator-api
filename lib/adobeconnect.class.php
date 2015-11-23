@@ -143,9 +143,10 @@
 
 				// If yes, we need to do more, otherwise skip to next user
 				if($usernameUpdateResponse !== false) {
-					$responseObj['ok'][$userObj['current_username']] ['message']                      = 'Brukernavn fusjonert!';
-					$responseObj['ok'][$userObj['current_username']] ['account_info_old']['username'] = $userObj['current_username'];
-					$responseObj['ok'][$userObj['current_username']] ['account_info_new']             = $usernameUpdateResponse;
+					$responseObj['ok'][$userObj['current_username']] ['message']                          = 'Brukernavn fusjonert!';
+					$responseObj['ok'][$userObj['current_username']] ['account_info_old']['username']     = $userObj['current_username'];
+					$responseObj['ok'][$userObj['current_username']] ['account_info_old']['principal_id'] = $userObj['principal_id'];
+					$responseObj['ok'][$userObj['current_username']] ['account_info_new']                 = $usernameUpdateResponse;
 				} else {
 					$responseObj['problem'][$userObj['current_username']]['message'] = 'Ukjent problem';
 				}
@@ -206,7 +207,7 @@
 		 * @return array
 		 */
 		private function _changeUsername($principalId, $newUsername) {
-			/*
+
 			$this->_logger('(BEFORE)', __LINE__, __FUNCTION__);
 			//Run the update call requested principalId
 			$apiChangeUsernameResponse = $this->callConnectApi(
@@ -219,19 +220,20 @@
 			$this->_logger('(AFTER)', __LINE__, __FUNCTION__);
 			// Exit on error
 			if(strcasecmp((string)$apiChangeUsernameResponse->status['code'], "ok") !== 0) {
-				Response::error(400, 'User update failed: ' . $newUsername . ': ' . (string)$apiChangeUsernameResponse->status['subcode']);
+				Response::error(400, 'User update failed: ' . $newUsername . ' (ID#'.$principalId.'): ' . (string)$apiChangeUsernameResponse->status['subcode']);
 			}
 
 			// Done :-)
 			return array(
-				'principal_id'       => (string)$apiChangeUsernameResponse->{'principal-list'}->principal['principal-id'],
-				'username' => (string)$apiChangeUsernameResponse->{'principal-list'}->principal->login
+				'principal_id' => (string)$apiChangeUsernameResponse->{'principal-list'}->principal['principal-id'],
+				'username'     => (string)$apiChangeUsernameResponse->{'principal-list'}->principal->login
 			);
-			*/
+			/* Dummy response:
 			return array(
 				'principal_id' => $principalId,
 				'username'     => $newUsername
 			);
+			*/
 		}
 
 
