@@ -193,8 +193,9 @@
 
 			// Done :-)
 			return array(
-				'principal_id' => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
-				'username'     => (string)$apiUserInfoResponse->{'principal-list'}->principal->login
+				'principal_id'  => (string)$apiUserInfoResponse->{'principal-list'}->principal['principal-id'],
+				'username'      => (string)$apiUserInfoResponse->{'principal-list'}->principal->login,
+				'response_full' => $apiUserInfoResponse
 			);
 		}
 
@@ -220,13 +221,13 @@
 			$this->_logger('(AFTER)', __LINE__, __FUNCTION__);
 			// Exit on error
 			if(strcasecmp((string)$apiChangeUsernameResponse->status['code'], "ok") !== 0) {
-				Response::error(400, 'User update failed: ' . $newUsername . ' (ID#'.$principalId.'): ' . (string)$apiChangeUsernameResponse->status['subcode']);
+				Response::error(400, 'User update failed: ' . $newUsername . ' (ID#' . $principalId . '): ' . (string)$apiChangeUsernameResponse->status['subcode']);
 			}
 
 			// Done :-)
 			return array(
-				'principal_id' => (string)$apiChangeUsernameResponse->principal['principal-id'],
-				'username'     => (string)$apiChangeUsernameResponse->login,
+				'principal_id'  => (string)$apiChangeUsernameResponse->principal['principal-id'],
+				'username'      => (string)$apiChangeUsernameResponse->login,
 				'response_full' => $apiChangeUsernameResponse
 			);
 			/* Dummy response:
