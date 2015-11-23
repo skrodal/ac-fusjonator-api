@@ -226,7 +226,8 @@
 			// Done :-)
 			return array(
 				'principal_id' => (string)$apiChangeUsernameResponse->principal['principal-id'],
-				'username'     => (string)$apiChangeUsernameResponse->login
+				'username'     => (string)$apiChangeUsernameResponse->login,
+				'response_full' => $apiChangeUsernameResponse
 			);
 			/* Dummy response:
 			return array(
