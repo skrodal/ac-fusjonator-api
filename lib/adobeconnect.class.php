@@ -212,7 +212,7 @@
 		 * @return array
 		 */
 		private function _changeUsername($principalId, $newUsername) {
-
+/*
 			$this->_logger('(BEFORE)', __LINE__, __FUNCTION__);
 			//Run the update call requested principalId
 			$apiChangeUsernameResponse = $this->callConnectApi(
@@ -241,14 +241,14 @@
 				'response_full' => $apiChangeUsernameResponse
 			);
 
+*/
 
-
-			/* Dummy response - for testing
+			/* Dummy response - for testing */
 			return array(
 				'principal_id' => $principalId,
 				'username'     => $newUsername
 			);
-			*/
+
 
 		}
 
