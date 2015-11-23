@@ -237,6 +237,7 @@
 				'response_full' => $apiChangeUsernameResponse
 			);
 			*/
+			Response::error(400, 'User update failed: ' . $newUsername . ' (ID#' . $principalId . '): ' . (string)$apiChangeUsernameResponse->status['subcode']);
 
 			/* Dummy response - for testing */
 			return array(
