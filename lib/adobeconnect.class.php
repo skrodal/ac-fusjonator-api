@@ -149,6 +149,10 @@
 					$responseObj['ok'][$userObj['current_username']] ['account_info_new']                 = $usernameUpdateResponse;
 				} else {
 					$responseObj['problem'][$userObj['current_username']]['message'] = 'Ukjent problem';
+					$responseObj['problem'][$userObj['current_username']] ['account_info_old']['username']     = $userObj['current_username'];
+					$responseObj['problem'][$userObj['current_username']] ['account_info_old']['principal_id'] = $userObj['principal_id'];
+					$responseObj['problem'][$userObj['current_username']] ['account_info_new']['username']     = $userObj['new_username'];
+					$responseObj['problem'][$userObj['current_username']] ['account_info_new']['principal_id'] = $userObj['principal_id'];
 				}
 			}
 
