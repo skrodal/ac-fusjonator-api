@@ -62,35 +62,61 @@ Kun brukere i "ready"-segmentet vil bli sent til Adobe Connect i neste kall for 
 
 ```
 {
-  "ready": {
-    "simon@uninett.no": {
-      "message": "Klar for fusjonering til nytt brukernavn!",
-      "account_info_current": {
-        "id": "839338",
-        "username": "simon@uninett.no"
+  "status": true,
+  "data": {
+    "ignore": {
+      "karius@hin.no": {
+        "message": "Hopper over siden ingen konto er registrert for dette brukernavnet.",
+        "account_info_current": {
+          "username": "karius@hin.no"
+        },
+        "account_info_new": {
+          "username": "karius@uit.no"
+        }
       },
-      "account_info_new": "simon@uit.no"
+      "baktus@hin.no": {
+        "message": "Hopper over siden ingen konto er registrert for dette brukernavnet.",
+        "account_info_current": {
+          "username": "baktus@hin.no"
+        },
+        "account_info_new": {
+          "username": "baktus@uit.no"
+        }
+      }
     },
-    "renlin@uninett.no": {
-      "message": "Klar for fusjonering til nytt brukernavn!",
-      "account_info_current": {
-        "id": "8902772",
-        "username": "renlin@uninett.no"
+    "ok": {
+      "simon@uninett.no": {
+        "message": "Klar for fusjonering til nytt brukernavn!",
+        "account_info_current": {
+          "principal_id": "237238",
+          "username": "simon@uninett.no"
+        },
+        "account_info_new": {
+          "username": "simon@uit.no"
+        }
       },
-      "account_info_new": "renlin@uit.no"
-    }
-  },
-  
-  "problem": {
-    "simon@uninett.no": {
-      "message": "Nytt brukernavn er allerede blitt tatt i bruk!",
-      "account_info_current": {
-        "id": "839338",
-        "username": "simon@uninett.no"
-      },
-      "account_info_new": {
-        "id": "8902772",
-        "username": "renlin@uninett.no"
+      "renlin@uninett.no": {
+        "message": "Klar for fusjonering til nytt brukernavn!",
+        "account_info_current": {
+          "principal_id": "5662772",
+          "username": "renlin@uninett.no"
+        },
+        "account_info_new": {
+          "username": "renlin@uit.no"
+        }
+      }
+    },
+    "problem": {
+      "simon@uninett.no": {
+        "message": "Kan ikke migrere! Nytt brukernavn er allerede blitt tatt i bruk.",
+        "account_info_current": {
+          "principal_id": "237238",
+          "username": "simon@uninett.no"
+        },
+        "account_info_new": {
+          "principal_id": "5662772",
+          "username": "renlin@uninett.no",
+        }
       }
     }
   }
