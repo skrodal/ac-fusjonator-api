@@ -58,7 +58,7 @@ Svar fra API etter å ha sjekket med Adobe Connect:
 - Neste to linjer er OK - begge brukere har konto og nytt brukernavn er ikke tatt i bruk enda. 
 - Siste linje: kollisjon siden nytt brukernavn allerede er tatt i bruk!
 
-Kun brukere i "ready"-segmentet vil bli sent til Adobe Connect i neste kall for migrering.
+Kun brukere i "ok"-segmentet vil bli sent til Adobe Connect i neste kall for migrering.
 
 ```
 {
