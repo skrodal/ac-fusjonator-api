@@ -1,8 +1,8 @@
 # ac-fusjonator-api
 
-Dette APIet er registrert i UNINETT Connect tjenesteplattform og benyttes av tjeneste "ConnectFusjonator".
+Dette APIet er registrert i UNINETT Dataporten og benyttes av tjeneste "ConnectFusjonator".
 
-APIet mottar og prosesserer henvendelser fra en `klient` (eks. https://github.com/skrodal/ac-fusjonator-client) registrert i UNINETT Connect tjenesteplattform som har tilgang til dette APIet.
+APIet mottar og prosesserer henvendelser fra en `klient` (eks. https://github.com/skrodal/ac-fusjonator-client) registrert i UNINETT Dataporten som har tilgang til dette APIet.
  
 Dataflyt mellom `klient`<->`API`<->`AdobeConnect` er som følger:
 
