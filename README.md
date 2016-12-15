@@ -128,3 +128,6 @@ Kun brukere i "ok"-segmentet vil bli sent til Adobe Connect i neste kall for mig
 
 For mer informasjon om APIets funksjon, se https://github.com/skrodal/ac-fusjonator-client. 
 
+## Annet ##
+
+Utviklet av Simon Skrødal for UNINETT
